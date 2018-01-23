@@ -1,0 +1,79 @@
+﻿@model Tuple<List<testapp.Models.Product>, testapp.Models.Permission>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@if (User.Identity.IsAuthenticated && (Model.Item2 == null || Model.Item2.AddContent))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            №
+        </th>
+        <th>
+            Наименование товара
+        </th>
+        <th>
+            Количество
+        </th>
+        <th>
+            Дата изменений
+        </th>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (Model.Item2 == null || Model.Item2.EditContent)
+            {
+                <th></th>
+            }
+            if (Model.Item2 == null || Model.Item2.DeleteContent)
+            {
+                <th></th>
+            }
+        }
+    </tr>
+
+@for (var i = 0; i < Model.Item1.Count(); i++) {
+    <tr onclick="location.href='@Url.Action("Details", "Products", new { id = Model.Item1[i].Id })'">
+        <td>
+            @(i+1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => Model.Item1[i].Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => Model.Item1[i].Count)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => Model.Item1[i].Modify)
+        </td>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (Model.Item2 == null || Model.Item2.EditContent)
+            {
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Item1[i].Id })
+                </td>
+            }
+            if (Model.Item2 == null || Model.Item2.DeleteContent)
+            {
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Item1[i].Id })
+                </td>
+             }
+          }
+      </tr>
+}
+
+</table>
+@if (Model.Item1.Count() > 0)
+{
+    <p>
+        @Html.ActionLink("Export report", "ExportToExcel")
+    </p>
+}
